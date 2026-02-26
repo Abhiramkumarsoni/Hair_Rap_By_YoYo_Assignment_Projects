@@ -1,0 +1,36 @@
+{
+  "best_model_name": "Random_Forest",
+  "metrics": {
+    "Accuracy": 0.663,
+    "Precision": 0.3116883116883117,
+    "Recall": 0.35668789808917195,
+    "F1 Score": 0.3326732673267327,
+    "AUC-ROC": 0.6111344855788791
+  },
+  "n_features": 19,
+  "n_train": 8000,
+  "n_test": 2000,
+  "feature_columns": [
+    "booking_lead_time_days",
+    "appointment_hour",
+    "past_visit_count",
+    "past_cancellation_count",
+    "past_no_show_count",
+    "is_weekend",
+    "customer_age",
+    "no_show_ratio",
+    "cancellation_ratio",
+    "is_new_customer",
+    "is_loyal_customer",
+    "service_type_encoded",
+    "payment_method_encoded",
+    "branch_encoded",
+    "day_of_week_encoded",
+    "gender_encoded",
+    "lead_time_bucket_encoded",
+    "hour_bucket_encoded",
+    "age_group_encoded"
+  ],
+  "mlflow_run_id": "a01d3c7c2d78427eb5238e25151ca90b",
+  "mlflow_experiment": "NoShow_Prediction"
+}

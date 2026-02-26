@@ -1,0 +1,397 @@
+================================================================================
+   AI-POWERED NO-SHOW & CUSTOMER INTELLIGENCE MODULE
+   Hair Rap by YoYo — Enterprise Salon Booking Platform
+================================================================================
+
+ABOUT THIS PROJECT
+==================
+
+This project is an end-to-end AI solution built for "Hair Rap by YoYo", a salon
+booking platform with 5 branches across Bangalore. The core problem it solves:
+
+    Customers book salon appointments but often DON'T SHOW UP.
+
+This leads to revenue loss, idle staff, and scheduling inefficiency. Our AI module
+tackles this by:
+
+  1. PREDICTING no-show probability before each appointment
+  2. CONVERTING predictions into business actions (reminders, prepaid requirements)
+  3. PROVIDING interactive dashboards for executives and managers
+  4. IDENTIFYING at-risk customers with data-backed retention strategies
+  5. SERVING predictions via a production-ready REST API
+  6. TRACKING all ML experiments with MLflow for reproducibility
+
+
+================================================================================
+   PROJECT STRUCTURE
+================================================================================
+
+Hair Rap by YoYo/
+│
+├── data/
+│   ├── generate_mock_data.py       → Script to generate synthetic booking data
+│   ├── salon_bookings.csv          → 10,000 booking records (generated)
+│   └── customer_profiles.csv       → 2,000 customer profiles (generated)
+│
+├── src/
+│   ├── feature_engineering.py      → Feature pipeline (creates 19 ML features)
+│   ├── train.py                    → Model training with MLflow tracking
+│   ├── predict.py                  → Inference module (load model → predict)
+│   └── retention.py                → Customer segmentation & retention strategies
+│
+├── api/
+│   └── api.py                      → FastAPI REST API for real-time predictions
+│
+├── models/
+│   ├── best_model.pkl              → Saved best model (Random Forest)
+│   ├── label_encoders.pkl          → Label encoders for categorical features
+│   ├── feature_importance.csv      → Feature importance rankings
+│   ├── model_comparison.csv        → Side-by-side comparison of all 4 models
+│   ├── model_metadata.json         → Training metadata (metrics, run ID, etc.)
+│   └── confusion_matrix.csv        → Confusion matrix of the best model
+│
+├── mlruns/                          → MLflow experiment tracking data
+│
+├── dashboard/
+│   └── app.py                      → Streamlit interactive dashboard (4 tabs)
+│
+├── README.md                       → Full project documentation (Markdown)
+├── PROJECT_GUIDE.txt               → This file
+└── requirements.txt                → Python dependencies
+
+
+================================================================================
+   HOW TO RUN — STEP BY STEP
+================================================================================
+
+PREREQUISITES:
+  - Python 3.10 or higher installed
+  - pip (Python package manager)
+  - A terminal / command prompt
+
+
+STEP 1: INSTALL DEPENDENCIES
+─────────────────────────────
+Open a terminal, navigate to the project folder, and run:
+
+    cd "c:\ML_Project\Hair Rap by YoYo"
+    pip install -r requirements.txt
+
+This installs: pandas, scikit-learn, xgboost, lightgbm, streamlit, plotly,
+fastapi, uvicorn, mlflow, and other required libraries.
+
+
+STEP 2: GENERATE MOCK DATA (Optional — already included)
+─────────────────────────────────────────────────────────
+If you want to regenerate the dataset from scratch:
+
+    python data/generate_mock_data.py
+
+This creates:
+  - data/salon_bookings.csv   (10,000 booking records)
+  - data/customer_profiles.csv (2,000 customer profiles)
+
+The data has realistic patterns embedded:
+  - Cash payments → higher no-show rate
+  - Customers with past no-shows → more likely to no-show again
+  - Long lead times → higher no-show probability
+  - Branch-specific and service-specific variations
+
+
+STEP 3: TRAIN THE ML MODELS
+────────────────────────────
+    python src/train.py
+
+This will:
+  a) Load the booking dataset
+  b) Engineer 19 features from raw data
+  c) Train 4 models:
+       - Logistic Regression (baseline)
+       - Random Forest (best performer)
+       - XGBoost
+       - LightGBM
+  d) Log ALL runs to MLflow (parameters, metrics, artifacts, models)
+  e) Select the best model by AUC-ROC score
+  f) Register it in MLflow Model Registry as "noshow_predictor"
+  g) Save local copies (best_model.pkl, label_encoders.pkl, etc.)
+
+Expected output:
+  - Best Model: Random_Forest (AUC-ROC: ~0.611)
+  - All 4 models logged to MLflow
+
+
+STEP 4: LAUNCH THE STREAMLIT DASHBOARD
+───────────────────────────────────────
+    streamlit run dashboard/app.py
+
+Open your browser to: http://localhost:8501
+
+The dashboard has 4 tabs:
+
+  TAB 1 — EXECUTIVE OVERVIEW
+    - KPI cards: Total Bookings, No-Show Rate, Revenue Loss, High-Risk Count
+    - No-show rate trend over time (weekly line chart)
+    - Table of high-risk upcoming bookings
+
+  TAB 2 — AI INSIGHTS
+    - Risk distribution donut chart (High / Medium / Low)
+    - Feature importance bar chart (top 10 predictors)
+    - No-show rates by Branch and by Service Type
+    - Model comparison table (all 4 models)
+
+  TAB 3 — CUSTOMER BEHAVIOR
+    - Customer segmentation: Repeat vs New vs Loyal
+    - Booking lead-time distribution (Show vs No-Show overlay)
+    - Peak no-show heatmap (Day of Week × Hour)
+    - No-show rate by Payment Method
+
+  TAB 4 — RETENTION INTELLIGENCE
+    - Customer segments pie chart (Loyal/Regular/New/At-Risk/Churned)
+    - Segment breakdown table with metrics
+    - Churn-risk customer list with specific reasons
+    - 3 data-backed retention strategies
+
+  SIDEBAR FILTERS:
+    - Date range picker
+    - Branch multi-select
+    - Service type multi-select
+
+
+STEP 5: START THE PREDICTION API
+─────────────────────────────────
+Open a NEW terminal window and run:
+
+    cd "c:\ML_Project\Hair Rap by YoYo"
+    uvicorn api.api:app --host 0.0.0.0 --port 8000
+
+The API will be available at: http://localhost:8000
+Swagger documentation at:     http://localhost:8000/docs
+
+API ENDPOINTS:
+
+  GET  /               → Health check (is the API running? is model loaded?)
+  POST /predict        → Predict no-show risk for a single booking
+  POST /predict/batch  → Predict for multiple bookings at once
+  GET  /model/info     → Get model name, metrics, feature list
+  GET  /model/features → Get ranked feature importances
+
+EXAMPLE API CALL (using curl):
+
+    curl -X POST http://localhost:8000/predict \
+      -H "Content-Type: application/json" \
+      -d '{
+        "customer_id": "CUST_0042",
+        "service_type": "Hair Coloring",
+        "branch": "Koramangala",
+        "booking_lead_time_days": 5,
+        "appointment_hour": 14,
+        "past_visit_count": 8,
+        "past_cancellation_count": 1,
+        "past_no_show_count": 2,
+        "payment_method": "Online Prepaid",
+        "day_of_week": "Wednesday",
+        "customer_age": 28,
+        "gender": "Female"
+      }'
+
+EXAMPLE RESPONSE:
+
+    {
+      "customer_id": "CUST_0042",
+      "no_show_probability": 0.309,
+      "risk_label": "Medium",
+      "risk_color": "#FFA500",
+      "recommended_action": "Send reminder SMS 24h + 2h before appointment.",
+      "model_version": "Random_Forest_v1"
+    }
+
+You can also test via the Swagger UI at http://localhost:8000/docs — it has a
+"Try it out" button for each endpoint.
+
+
+STEP 6: VIEW MLFLOW EXPERIMENT UI
+──────────────────────────────────
+Open another terminal and run:
+
+    cd "c:\ML_Project\Hair Rap by YoYo"
+    mlflow ui --backend-store-uri file:///c:/ML_Project/Hair Rap by YoYo/mlruns
+
+Open browser to: http://localhost:5000
+
+Here you can:
+  - See all 4 model training runs
+  - Compare metrics (AUC-ROC, F1, Precision, Recall, Accuracy) side by side
+  - View hyperparameters logged for each model
+  - Download artifacts (feature importances, confusion matrices)
+  - Check the Model Registry → "noshow_predictor" model versions
+
+
+================================================================================
+   DETAILED MODULE EXPLANATIONS
+================================================================================
+
+1. DATA GENERATION (data/generate_mock_data.py)
+────────────────────────────────────────────────
+  - Creates 10,000 realistic salon bookings across 5 Bangalore branches
+  - 6 service types: Haircut, Hair Coloring, Spa & Massage, Facial, Bridal, Treatment
+  - 3 payment methods: Cash, Online Prepaid, Card at Salon
+  - Embeds 10+ realistic no-show patterns:
+      • Cash payers no-show more than prepaid customers
+      • Past no-showers are repeat offenders
+      • Long booking lead times → higher no-show
+      • Weekend slots → slightly higher no-show
+      • Young customers (18-25) → higher no-show
+      • Certain branches have higher base rates
+  - Overall no-show rate: ~23.5% (matches industry averages for salons)
+
+
+2. FEATURE ENGINEERING (src/feature_engineering.py)
+───────────────────────────────────────────────────
+  Creates 19 features from raw booking data:
+
+  Historical Behavior:
+    - no_show_ratio:       past_no_show_count / (past_visit_count + 1)
+    - cancellation_ratio:  past_cancellation_count / (past_visit_count + 1)
+
+  Customer Profile:
+    - is_new_customer:     1 if past_visit_count <= 1
+    - is_loyal_customer:   1 if past_visit_count >= 10
+    - customer_age, gender (encoded)
+
+  Temporal:
+    - appointment_hour, day_of_week, is_weekend
+    - hour_bucket (Morning/Afternoon/Evening)
+    - lead_time_bucket (Same-day/Short/Medium/Long)
+
+  Booking Context:
+    - booking_lead_time_days
+    - service_type, branch, payment_method (all label-encoded)
+
+
+3. MODEL TRAINING (src/train.py)
+────────────────────────────────
+  Trains 4 classification models:
+
+  a) Logistic Regression  — Simple, interpretable baseline
+  b) Random Forest         — Ensemble of 300 decision trees (BEST PERFORMER)
+  c) XGBoost              — Gradient boosted trees
+  d) LightGBM             — Fast gradient boosting
+
+  Class Imbalance Handling:
+    - ~77% Show vs ~23% No-Show
+    - All models use class_weight="balanced" or scale_pos_weight
+    - This ensures the model doesn't just predict "Show" for everything
+
+  Best Model: Random Forest
+    - AUC-ROC: 0.6111
+    - F1 Score: 0.3327
+    - Precision: 0.3117
+    - Recall: 0.3567
+
+  MLflow Integration:
+    - Each model logged as a separate MLflow run
+    - Parameters, metrics, artifacts, and the model itself are tracked
+    - Best model registered in MLflow Model Registry
+
+
+4. PREDICTION MODULE (src/predict.py)
+─────────────────────────────────────
+  - Loads the saved model and label encoders
+  - predict_no_show(df) → returns probabilities
+  - Risk Labels:
+      >= 60%  → HIGH   (red)    → Require prepaid, double reminder
+      30-59%  → MEDIUM (orange) → Send reminder, waitlist backup
+      < 30%   → LOW    (green)  → Standard confirmation
+
+5. RETENTION INTELLIGENCE (src/retention.py)
+────────────────────────────────────────────
+  Customer Segments:
+    - LOYAL:    10+ bookings, <20% no-show ratio
+    - REGULAR:  3-9 bookings
+    - NEW:      1-2 bookings
+    - AT-RISK:  No visit in 60+ days OR >50% no-show rate
+    - CHURNED:  No visit in 90+ days + had prior visits
+
+  Churn-Risk Detection:
+    - Rule-based system that flags customers with reasons:
+      "No visit in 60+ days", "High no-show ratio", etc.
+
+  3 Retention Strategies:
+    1. Targeted re-engagement for churned/at-risk
+    2. Prepaid booking incentive (10% discount)
+    3. New customer onboarding ("3-visit reward" program)
+
+
+6. FASTAPI PREDICTION API (api/api.py)
+──────────────────────────────────────
+  Production-ready REST API:
+    - Pydantic request/response schemas with validation
+    - Auto-generated Swagger documentation
+    - Error handling with proper HTTP status codes
+    - Business action recommendations in responses
+    - Supports single and batch predictions
+
+
+7. STREAMLIT DASHBOARD (dashboard/app.py)
+─────────────────────────────────────────
+  4-tab interactive dashboard:
+    - Executive Overview: KPIs, trends, high-risk bookings
+    - AI Insights: Risk distribution, feature importance, model comparison
+    - Customer Behavior: Segmentation, lead-time, heatmaps, payment analysis
+    - Retention Intelligence: Segments, churn-risk list, strategies
+  Sidebar filters for date range, branch, and service type.
+
+
+================================================================================
+   PRODUCTION ARCHITECTURE (Designed)
+================================================================================
+
+The project also documents a full production deployment architecture:
+
+  1. BOOKING API: FastAPI receives booking requests from mobile/web clients
+  2. FEATURE PIPELINE: Real-time feature computation from customer history
+  3. ML MODEL SERVICE: Random Forest inference (<50ms latency target)
+  4. BUSINESS ACTIONS: Automated SMS reminders, prepaid requirements
+  5. DATABASE: PostgreSQL for bookings, customers, prediction logs
+  6. RETRAINING: Weekly automated retraining via Apache Airflow
+  7. DRIFT DETECTION: PSI + KS tests to detect feature distribution shifts
+  8. MONITORING: Prometheus + Grafana for model performance tracking
+  9. MODEL REGISTRY: MLflow for version control, A/B testing, rollback
+  10. SCALABILITY: Kubernetes autoscaling for 200K+ users
+
+
+================================================================================
+   TECH STACK
+================================================================================
+
+  IMPLEMENTED:
+    - Python 3.12
+    - Scikit-learn, XGBoost, LightGBM (ML models)
+    - Streamlit + Plotly (Dashboard)
+    - FastAPI + Uvicorn (REST API)
+    - MLflow (Experiment tracking + Model Registry)
+    - Pandas, NumPy (Data processing)
+    - Matplotlib, Seaborn (Visualization)
+
+  DESIGNED (documented for production):
+    - Apache Airflow (Orchestration)
+    - Prometheus + Grafana (Monitoring)
+    - PostgreSQL (Database)
+    - Docker + Kubernetes (Containerization)
+
+
+================================================================================
+   QUICK REFERENCE — ALL COMMANDS
+================================================================================
+
+  pip install -r requirements.txt            → Install dependencies
+  python data/generate_mock_data.py          → Generate dataset
+  python src/train.py                        → Train models + MLflow logging
+  streamlit run dashboard/app.py             → Launch dashboard (:8501)
+  uvicorn api.api:app --port 8000            → Start API (:8000)
+  mlflow ui --backend-store-uri file:///...  → MLflow UI (:5000)
+
+
+================================================================================
+   Built with care for Hair Rap by YoYo
+================================================================================
