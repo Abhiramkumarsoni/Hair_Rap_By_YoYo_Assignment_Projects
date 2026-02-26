@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.env/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# MLflow (large tracking data — regenerated via train.py)
+mlruns/
+
+# Model artifacts (large binary — regenerated via train.py)
+models/best_model.pkl
