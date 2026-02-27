@@ -52,6 +52,7 @@ Hair Rap by YoYo/
 ├── src/
 │   ├── feature_engineering.py      # Feature pipeline (19 features)
 │   ├── train.py                    # Model training with MLflow tracking
+│   ├── train_without_mlflow.py     # Standalone training (no MLflow)
 │   ├── predict.py                  # Inference module
 │   └── retention.py                # Customer segmentation & strategies
 ├── api/
@@ -65,7 +66,10 @@ Hair Rap by YoYo/
 │   └── confusion_matrix.csv        # Best model confusion matrix
 ├── mlruns/                          # MLflow experiment tracking data
 ├── dashboard/
-│   └── app.py                      # Streamlit interactive dashboard
+│   ├── app.py                      # Streamlit interactive dashboard
+│   └── api_frontend.py             # API testing frontend (Streamlit)
+├── experiment.ipynb                 # XGBoost experiment notebook
+├── Video Project.mp4                # Project demo video
 ├── README.md                       # This file
 └── requirements.txt                # Python dependencies
 ```
@@ -91,7 +95,7 @@ streamlit run dashboard/app.py
 uvicorn api.api:app --host 0.0.0.0 --port 8000
 
 # 6. View MLflow experiment UI (separate terminal)
-mlflow ui --backend-store-uri file:///path/to/mlruns
+mlflow ui --backend-store-uri mlruns
 ```
 
 ---
@@ -354,7 +358,8 @@ streamlit run dashboard/app.py
           │                 │                    │
           ▼                 ▼                    │
 ┌──────────────────────────────────┐             │
-│     Feature Engineering          │             │       Pipeline (Real-time)         │             │
+│     Feature Engineering          │             │
+│     Pipeline (Real-time)         │             │
 │  ┌────────────────────────────┐  │             │
 │  │ • Customer history lookup  │  │             │
 │  │ • Compute no_show_ratio    │  │             │
