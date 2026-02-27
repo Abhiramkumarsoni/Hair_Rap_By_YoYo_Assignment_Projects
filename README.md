@@ -354,8 +354,7 @@ streamlit run dashboard/app.py
           │                 │                    │
           ▼                 ▼                    │
 ┌──────────────────────────────────┐             │
-│     Feature Engineering          │             │
-│     Pipeline (Real-time)         │             │
+│     Feature Engineering          │             │       Pipeline (Real-time)         │             │
 │  ┌────────────────────────────┐  │             │
 │  │ • Customer history lookup  │  │             │
 │  │ • Compute no_show_ratio    │  │             │
@@ -513,4 +512,4 @@ async def predict_risk(booking: BookingRequest):
 
 ---
 
-**Built with ❤️ for Hair Rap by YoYo**
+**Built by Abhiram Kumar Soni for Hair Rap by YoYo**

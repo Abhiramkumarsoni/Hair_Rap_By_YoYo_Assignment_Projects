@@ -1,0 +1,52 @@
+# Project Explanation: Hair Rap by YoYo
+
+## Overview
+"Hair Rap by YoYo" is an end-to-end AI module and enterprise salon booking platform intended to tackle the problem of appointment no-shows. When customers book appointments but fail to show up it leads to revenue loss, staff idle time, and scheduling inefficiency. This project aims to predict the probability of a no-show before the appointment, enabling the business to take preventative actions.
+
+## Key Components & Workflow
+
+### 1. Data Generation & EDA
+- The project simulates realistic data using a synthetic mock data generator (`data/generate_mock_data.py`).
+- It generates 10,000 booking records across 6 months, mapping 1,990 unique customers to 5 branch locations in Bangalore.
+- EDA findings show no-show correlations with payment methods (cash has higher no-shows), booking lead times, customer history, and service types.
+
+### 2. Feature Engineering
+- The engine computes 19 features from the raw data.
+- **Categorical Data:** Encodes branches, payment methods, and services.
+- **Historical Data:** Identifies important derived ratios such as `no_show_ratio` and `cancellation_ratio`.
+- **Temporal Data:** Incorporates factors like appointment hour, booking lead time, and day of the week.
+
+### 3. Machine Learning Model Training (Tracked by MLflow)
+- The pipeline trains several models: Random Forest, LightGBM, XGBoost, and Logistic Regression.
+- **Random Forest** was selected as the champion model because it achieved the best AUC-ROC score while handling class imbalance.
+- **MLflow Tracking:** All experiments, parameters, metrics, feature importances, and the serialized models are stored using MLflow (`mlruns/`), allowing for reproducibility, version control, and robust model registry management.
+
+### 4. Prediction API (FastAPI)
+- A REST API (`api/api.py`) runs in the background using FastAPI.
+- It exposes endpoints (e.g., `/predict` and `/predict/batch`) that take in customer booking data and evaluate no-show risk in real-time.
+- Based on the predicted probability, it assigns risk labels (High, Medium, Low) and suggests automated business actions (e.g., Require prepaid booking, send double SMS reminders, overbooking).
+
+### 5. Interactive Executive Dashboard (Streamlit)
+- The user-facing BI tool (`dashboard/app.py`) provides 4 main views:
+  - **Executive Overview:** High-level KPIs, total bookings, no-show rates, and estimated revenue impact.
+  - **AI Insights:** AI predictions distribution, feature importance, and model performance metrics.
+  - **Customer Behavior:** Deep dives into booking lead time patterns, temporal heatmaps, and past visit effects.
+  - **Retention Intelligence:** Customer segmentation (Loyal, Regular, New, At-Risk, Churned) to track customer lifetime value and churn risk.
+
+### 6. Retention Strategies
+- Based on customer segmentation, the system automatically tags customers and recommends actionable strategies like Re-Engagement Campaigns, Prepaid Booking Incentives, and New Customer Onboarding rewards.
+
+## Project Structure Quick-Reference
+- `data/`: Mock data generation and the `.csv` datasets.
+- `src/`: Training, inference, feature engineering, and retention algorithms.
+- `models/`: Holds the best serialized sklearn model (`best_model.pkl`) and necessary metadata for production.
+- `api/`: Holds the FastAPI layer.
+- `dashboard/`: Contains the Streamlit dashboard app.
+- `mlruns/`: Local MLflow execution logging.
+
+## Running the Architecture
+For a complete run, rely on these independent services:
+1. `python src/train.py` to trigger model training and generate new MLflow artifacts.
+2. `uvicorn api.api:app --host 0.0.0.0 --port 8000` to serve the REST API.
+3. `streamlit run dashboard/app.py` to view the comprehensive graphical interface.
+4. `mlflow ui --backend-store-uri file:///path/to/mlruns` to open the MLflow experiment tracking interface.
