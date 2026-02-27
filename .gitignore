@@ -31,3 +31,9 @@ demo_prediction.py
 project_explanation.txt
 Alignment Report.docx
 PROJECT_GUIDE.txt
+
+# Large data files (too big for GitHub)
+*.csv
+Videos/
+
+data/salon_bookings.csv
