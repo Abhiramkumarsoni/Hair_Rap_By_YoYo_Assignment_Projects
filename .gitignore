@@ -24,3 +24,10 @@ mlruns/
 
 # Model artifacts (large binary — regenerated via train.py)
 models/best_model.pkl
+
+# Large media files (exceeds GitHub 100MB limit)
+Video Project.mp4
+demo_prediction.py
+project_explanation.txt
+Alignment Report.docx
+PROJECT_GUIDE.txt
