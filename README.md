@@ -330,8 +330,8 @@ streamlit run dashboard/app.py
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    PRODUCTION ARCHITECTURE                         │
-│                  Hair Rap by YoYo — AI Module                      │
+│                    PRODUCTION ARCHITECTURE                          │
+│                  Hair Rap by YoYo — AI Module                       │
 └─────────────────────────────────────────────────────────────────────┘
 
                     ┌──────────────────────┐
@@ -341,7 +341,7 @@ streamlit run dashboard/app.py
                                │
                                ▼
 ┌──────────────────────────────────────────────────────────────┐
-│                    API Gateway (Nginx)                        │
+│                    API Gateway (Nginx)                       │
 └──────────────────────┬───────────────────────────────────────┘
                        │
                        ▼
@@ -411,7 +411,7 @@ streamlit run dashboard/app.py
        ▼
 ┌──────────────────────┐
 │  Model Registry      │
-│  (MLflow)            │
+│   (MLflow)           │
 │  • Version control   │
 │  • A/B testing       │
 │  • Rollback support  │
@@ -514,4 +514,5 @@ async def predict_risk(booking: BookingRequest):
 ---
 
 **Built by Abhiram Kumar Soni for Hair Rap by YoYo**
+
 
