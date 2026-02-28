@@ -3,6 +3,8 @@ Generate synthetic salon booking dataset for Hair Rap by YoYo.
 Creates ~10,000 realistic booking records with embedded no-show patterns.
 """
 
+
+# import necessary library
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -284,3 +286,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
