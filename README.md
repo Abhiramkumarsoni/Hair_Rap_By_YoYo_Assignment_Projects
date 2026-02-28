@@ -345,8 +345,8 @@ streamlit run dashboard/app.py
 └──────────────────────┬───────────────────────────────────────┘
                        │
                        ▼
-┌──────────────────────────────────────────────────────────────┐
-│              Booking API (FastAPI)                            │
+┌─────────────────────────────────────────────────────────────┐
+│              Booking API (FastAPI)                          │
 │  ┌─────────────┐  ┌────────────────┐  ┌──────────────────┐  │
 │  │ POST /book  │  │ GET /risk/{id} │  │ GET /dashboard   │  │
 │  └──────┬──────┘  └───────┬────────┘  └────────┬─────────┘  │
@@ -369,28 +369,28 @@ streamlit run dashboard/app.py
 │    ML Model Service              │             │
 │    (Random Forest - Scikit)      │             │
 │  ┌────────────────────────────┐  │             │
-│  │ predict_proba() → 0.72    │  │             │
-│  │ risk_label    → "High"    │  │             │
+│  │ predict_proba() → 0.72     │  │             │
+│  │ risk_label    → "High"     │  │             │
 │  └─────────────┬──────────────┘  │             │
 └────────────────┼─────────────────┘             │
                  │                               │
                  ▼                               ▼
 ┌─────────────────────┐          ┌──────────────────────────┐
-│  Business Actions    │          │  Streamlit Dashboard     │
-│  ┌────────────────┐  │          │  ┌────────────────────┐  │
-│  │ SMS Reminder   │  │          │  │ Executive Overview │  │
-│  │ Prepaid Req.   │  │          │  │ AI Insights        │  │
-│  │ Overbooking    │  │          │  │ Customer Behavior  │  │
-│  │ Waitlist Mgmt  │  │          │  │ Retention Intel.   │  │
-│  └────────────────┘  │          │  └────────────────────┘  │
+│  Business Actions    │         │  Streamlit Dashboard     │
+│  ┌────────────────┐  │         │  ┌────────────────────┐  │
+│  │ SMS Reminder   │  │         │  │ Executive Overview │  │
+│  │ Prepaid Req.   │  │         │  │ AI Insights        │  │
+│  │ Overbooking    │  │         │  │ Customer Behavior  │  │
+│  │ Waitlist Mgmt  │  │         │  │ Retention Intel.   │  │
+│  └────────────────┘  │         │  └────────────────────┘  │
 └─────────────────────┘          └──────────────────────────┘
                  │
                  ▼
 ┌──────────────────────────────────────────────────────────────┐
-│                    PostgreSQL Database                        │
-│  ┌──────────┐  ┌────────────┐  ┌────────────────────────┐   │
-│  │ bookings │  │ customers  │  │ prediction_logs        │   │
-│  └──────────┘  └────────────┘  └────────────────────────┘   │
+│                    PostgreSQL Database                       │
+│  ┌──────────┐  ┌────────────┐  ┌────────────────────────┐    │
+│  │ bookings │  │ customers  │  │ prediction_logs        │    │
+│  └──────────┘  └────────────┘  └────────────────────────┘    │
 └──────────────────────┬───────────────────────────────────────┘
                        │
          ┌─────────────┼─────────────┐
@@ -514,3 +514,4 @@ async def predict_risk(booking: BookingRequest):
 ---
 
 **Built by Abhiram Kumar Soni for Hair Rap by YoYo**
+
