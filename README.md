@@ -69,7 +69,6 @@ Hair Rap by YoYo/
 │   ├── app.py                      # Streamlit interactive dashboard
 │   └── api_frontend.py             # API testing frontend (Streamlit)
 ├── experiment.ipynb                 # XGBoost experiment notebook
-├── Video Project.mp4                # Project demo video
 ├── README.md                       # This file
 └── requirements.txt                # Python dependencies
 ```
@@ -208,11 +207,8 @@ uvicorn api.api:app --host 0.0.0.0 --port 8000
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/` | GET | Health check + API info |
-| `/predict` | POST | Single booking risk prediction |
-| `/predict/batch` | POST | Batch prediction (multiple bookings) |
-| `/model/info` | GET | Current model metadata & metrics |
-| `/model/features` | GET | Feature importance rankings |
+| `/` | GET | Health check + model status |
+| `/predict` | POST | Single booking no-show risk prediction |
 
 ### Example: Predict No-Show Risk
 
